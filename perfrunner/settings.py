@@ -10,8 +10,6 @@ from perfrunner.helpers.misc import uhex
 
 REPO = 'https://github.com/couchbaselabs/perfrunner'
 
-SHOWFAST = {'host': 'showfast.sc.couchbase.com', 'password': 'password'}
-
 CBMONITOR = {'host': 'cbmonitor.sc.couchbase.com', 'password': 'password'}
 
 SERIESLY = {'host': 'cbmonitor.sc.couchbase.com'}
@@ -277,6 +275,7 @@ class StatsSettings(object):
     LAT_INTERVAL = 1
     POST_RSS = 0
     POST_CPU = 0
+    SHOWFAST = {'host': 'showfast.sc.couchbase.com', 'password': 'password'}
 
     def __init__(self, options):
         self.enabled = int(options.get('enabled', self.ENABLED))
@@ -285,6 +284,10 @@ class StatsSettings(object):
         self.lat_interval = int(options.get('lat_interval', self.LAT_INTERVAL))
         self.post_rss = int(options.get('post_rss', self.POST_RSS))
         self.post_cpu = int(options.get('post_cpu', self.POST_CPU))
+        self.showfast = {'host': options.get('showfast_host',
+                                             self.SHOWFAST['host']),
+                         'password': options.get('showfast_password',
+                                                 self.SHOWFAST['password'])}
 
 
 class BucketSettings(object):
