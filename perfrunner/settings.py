@@ -11,8 +11,6 @@ from perfrunner.helpers.misc import uhex
 REPO = 'https://github.com/daverigby/perfrunner'
 REPO_BRANCH = 'falco'
 
-SERIESLY = {'host': 'cbmonitor.sc.couchbase.com'}
-
 
 @decorator
 def safe(method, *args, **kargs):
@@ -275,6 +273,7 @@ class StatsSettings(object):
     LAT_INTERVAL = 1
     POST_RSS = 0
     POST_CPU = 0
+    SERIESLY = {'host': 'cbmonitor.sc.couchbase.com'}
     SHOWFAST = {'host': 'showfast.sc.couchbase.com', 'password': 'password'}
 
     def __init__(self, options):
@@ -288,6 +287,8 @@ class StatsSettings(object):
         self.lat_interval = int(options.get('lat_interval', self.LAT_INTERVAL))
         self.post_rss = int(options.get('post_rss', self.POST_RSS))
         self.post_cpu = int(options.get('post_cpu', self.POST_CPU))
+        self.seriesly = {'host': options.get('seriesly_host',
+                                             self.SERIESLY['host'])}
         self.showfast = {'host': options.get('showfast_host',
                                              self.SHOWFAST['host']),
                          'password': options.get('showfast_password',
