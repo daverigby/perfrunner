@@ -304,6 +304,7 @@ class BucketSettings(object):
     REPLICA_INDEX = 0
     EVICTION_POLICY = 'valueOnly'  # alt: fullEviction
     EXPIRY_PAGER_SLEEP_TIME = -1
+    DEFRAGMENTER_ENABLED = -1
 
     def __init__(self, options):
         self.password = options.get('password', self.PASSWORD)
@@ -325,6 +326,9 @@ class BucketSettings(object):
         )
         self.eviction_policy = \
             options.get('eviction_policy', self.EVICTION_POLICY)
+
+        self.defragmenter_enabled = options.get('defragmenter_enabled',
+                                                self.DEFRAGMENTER_ENABLED)
 
         self.threads_number = options.get('threads_number')  # 2.x
 
