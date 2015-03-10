@@ -128,15 +128,27 @@ class PerfTest(object):
     def load(self):
         load_settings = self.test_config.load_settings
         log_phase('load phase', load_settings)
-        self.worker_manager.run_workload(load_settings, self.target_iterator)
-        self.worker_manager.wait_for_workers()
+        if self.test_config.test_case.use_workers:
+            self.worker_manager.run_workload(load_settings, self.target_iterator)
+            self.worker_manager.wait_for_workers()
+        else:
+            for target in self.target_iterator:
+                from spring.wgen import WorkloadGen
+                wg = WorkloadGen(load_settings, target)
+                wg.run()
 
     def hot_load(self):
         hot_load_settings = self.test_config.hot_load_settings
         log_phase('hot load phase', hot_load_settings)
-        self.worker_manager.run_workload(hot_load_settings,
+        if self.test_config.test_case.use_workers:
+            self.worker_manager.run_workload(hot_load_settings,
                                          self.target_iterator)
-        self.worker_manager.wait_for_workers()
+            self.worker_manager.wait_for_workers()
+        else:
+            for target in self.target_iterator:
+                from spring.wgen import WorkloadGen
+                wg = WorkloadGen(hot_load_settings, target)
+                wg.run()
 
     def access(self):
         access_settings = self.test_config.access_settings
@@ -150,8 +162,14 @@ class PerfTest(object):
         access_settings.index_type = self.test_config.index_settings.index_type
         access_settings.n1ql = getattr(self, 'n1ql', None)
         access_settings.ddocs = getattr(self, 'ddocs', None)
-        self.worker_manager.run_workload(access_settings, self.target_iterator,
-                                         timer=access_settings.time)
+        if self.test_config.test_case.use_workers:
+            self.worker_manager.run_workload(access_settings, self.target_iterator,
+                                             timer=access_settings.time)
+        else:
+            for target in self.target_iterator:
+                from spring.wgen import WorkloadGen
+                wg = WorkloadGen(access_settings, target, access_settings.time)
+                wg.run()
 
     def timer(self):
         access_settings = self.test_config.access_settings
