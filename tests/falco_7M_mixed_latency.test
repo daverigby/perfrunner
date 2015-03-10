@@ -13,6 +13,9 @@ initial_nodes = 1
 num_buckets = 1
 num_vbuckets = 4
 
+[compaction]
+db_percentage = 100
+
 [bucket]
 # Run expiry pager every 2 minutes.
 exp_pager_stime = 120
