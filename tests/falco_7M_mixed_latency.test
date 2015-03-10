@@ -20,7 +20,7 @@ exp_pager_stime = 120
 [load]
 items = 7000000
 size = 100
-workers = 20
+workers = 40
 
 [access]
 creates = 0
