@@ -9,6 +9,7 @@ from perfrunner.helpers.misc import uhex
 
 
 REPO = 'https://github.com/couchbaselabs/perfrunner'
+REPO_BRANCH = None
 
 SHOWFAST = {'host': 'showfast.sc.couchbase.com', 'password': 'password'}
 

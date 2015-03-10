@@ -10,7 +10,7 @@ from spring.wgen import WorkloadGen
 from sqlalchemy import create_engine
 
 from perfrunner import celerylocal, celeryremote
-from perfrunner.settings import REPO
+from perfrunner.settings import REPO, REPO_BRANCH
 
 
 celery = Celery('workers')
@@ -71,7 +71,10 @@ class RemoteWorkerManager(object):
 
                 run('mkdir {}'.format(temp_dir))
                 with cd(temp_dir):
-                    run('git clone {}'.format(REPO))
+                    cmd = 'git clone {}'.format(REPO)
+                    if REPO_BRANCH:
+                        cmd += ' -b {}'.format(REPO_BRANCH)
+                    run(cmd)
                 with cd('{}/perfrunner'.format(temp_dir)):
                     run('virtualenv -p python2.7 env')
                     run('PATH=/usr/lib/ccache:/usr/lib64/ccache/bin:$PATH '
