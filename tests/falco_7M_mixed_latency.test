@@ -1,0 +1,35 @@
+# Falco workload scaled down to 1/256th of the original.
+# (i.e. same per-vBucket) workload if using just 4 vBuckets).
+
+[test_case]
+test = perfrunner.tests.kv.MixedLatencyTest
+title = [Falco] 95th latency (ms): 7M x 1KB docs, 50/50 r/w, 14K ops/sec
+summary = Falco latency test, 7M x 1KB docs, 50/50 r/w, 14K ops/sec
+larger_is_better = false
+
+[cluster]
+## mem_quota should be 73728; reducing to run on VM.
+mem_quota = 6000
+initial_nodes = 1
+num_buckets = 1
+num_vbuckets = 4
+
+[bucket]
+# Run expiry pager every 10 minutes.
+exp_pager_stime = 60
+
+[load]
+items = 7000000
+size = 100
+workers = 20
+
+[access]
+creates = 0
+reads = 50
+updates = 50
+deletes = 0
+throughput = 14000
+items = 7000000
+size = 1024
+workers = 4
+time = 300
