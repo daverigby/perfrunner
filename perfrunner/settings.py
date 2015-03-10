@@ -426,7 +426,7 @@ class PhaseSettings(object):
         self.doc_gen = options.get('doc_gen', self.DOC_GEN)
         self.size = int(options.get('size', self.SIZE))
         self.items = int(options.get('items', self.ITEMS))
-        self.expiration = int(options.get('expiration', self.EXPIRATION))
+        self.expiration = float(options.get('expiration', self.EXPIRATION))
         self.working_set = float(options.get('working_set', self.WORKING_SET))
         self.working_set_access = int(options.get('working_set_access',
                                                   self.WORKING_SET_ACCESS))

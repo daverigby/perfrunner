@@ -30,7 +30,8 @@ creates = 0
 reads = 50
 updates = 50
 deletes = 0
-expiration = 1
+# Set a TTL for 0.5% of updates.
+expiration = 0.005
 throughput = 14000
 items = 7000000
 size = 1024
