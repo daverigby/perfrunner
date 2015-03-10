@@ -1,12 +1,11 @@
 [clusters]
 falco =
-    ec2-52-74-29-53.ap-southeast-1.compute.amazonaws.com:8091
-
-#    ec2-52-74-0-228.ap-southeast-1.compute.amazonaws.com:8091
+    ec2-52-16-208-252.eu-west-1.compute.amazonaws.com:8091
+#    ec2-52-16-210-108.eu-west-1.compute.amazonaws.com:8091
 
 [clients]
 hosts =
-    ec2-52-74-34-149.ap-southeast-1.compute.amazonaws.com
+    ec2-52-16-74-61.eu-west-1.compute.amazonaws.com
 credentials = root:couchbase
 
 [storage]
