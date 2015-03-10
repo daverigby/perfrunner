@@ -8,8 +8,8 @@ from logger import logger
 from perfrunner.helpers.misc import uhex
 
 
-REPO = 'https://github.com/couchbaselabs/perfrunner'
-REPO_BRANCH = None
+REPO = 'https://github.com/daverigby/perfrunner'
+REPO_BRANCH = 'falco'
 
 SHOWFAST = {'host': 'showfast.sc.couchbase.com', 'password': 'password'}
 
