@@ -158,8 +158,9 @@ class RemoteLinuxHelper(object):
 
     @all_hosts
     def clean_data(self):
-        for path in self.cluster_spec.paths:
-            run('rm -fr {}/*'.format(path))
+        if self.cluster_spec.paths:
+            for path in self.cluster_spec.paths:
+                run('rm -fr {}/*'.format(path))
         run('rm -fr {}'.format(self.CB_DIR))
 
     @all_hosts
