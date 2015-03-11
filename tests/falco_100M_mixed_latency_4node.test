@@ -1,0 +1,31 @@
+[test_case]
+test = perfrunner.tests.kv.MixedLatencyTest
+title = [Falco] 95th latency (ms): 100M x 100B docs, 50/50 r/w, 50K ops/sec
+summary = Falco latency test, 100M x 100B docs, 50/50 r/w, 50K ops/sec
+larger_is_better = false
+
+[cluster]
+mem_quota = 73728
+initial_nodes = 4
+num_buckets = 1
+num_vbuckets = 256
+
+[bucket]
+exp_pager_stime = 600
+
+[load]
+items = 100000000
+size = 100
+workers = 20
+
+[access]
+creates = 0
+reads = 50
+updates = 50
+deletes = 0
+expiration = 0.5
+throughput = 50000
+items = 100000000
+size = 100
+workers = 20
+time = 2000
