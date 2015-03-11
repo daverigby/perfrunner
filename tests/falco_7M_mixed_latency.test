@@ -3,9 +3,13 @@
 
 [test_case]
 test = perfrunner.tests.kv.MixedLatencyTest
-title = [Falco] 95th latency (ms): 7M x 1KB docs, 50/50 r/w, 14K ops/sec
-summary = Falco latency test, 7M x 1KB docs, 50/50 r/w, 14K ops/sec
+title = [Falco] 99th latency (ms): 7M x 1KB docs, 50/50 r/w, 14K ops/sec
+summary = Falco 99th percentile latency test, 7M x 1KB docs, 50/50 r/w, 14K ops/sec
+percentile = 99
 larger_is_better = false
+
+[stats]
+interval = 2
 
 [cluster]
 mem_quota = 73728
@@ -17,13 +21,13 @@ num_vbuckets = 4
 db_percentage = 100
 
 [bucket]
-# Run expiry pager every 2 minutes.
-exp_pager_stime = 120
+# Run expiry pager every 50 seconds.
+exp_pager_stime = 50
 
 [load]
 items = 7000000
 size = 100
-workers = 40
+workers = 80
 
 [access]
 creates = 0
@@ -34,6 +38,6 @@ deletes = 0
 expiration = 0.005
 throughput = 14000
 items = 7000000
-size = 1024
+size = 100
 workers = 5
 time = 300
