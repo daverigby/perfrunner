@@ -219,6 +219,7 @@ class TestCaseSettings(object):
 
     USE_WORKERS = 1
     LEVEL = 'Basic'  # depricated, alt: Advanced
+    PERCENTILE = 95  # nth percentile to report for final metric.
 
     def __init__(self, options):
         self.test_module = '.'.join(options.get('test').split('.')[:-1])
@@ -228,6 +229,7 @@ class TestCaseSettings(object):
         self.larger_is_better = options.get('larger_is_better')
         self.level = options.get('level', self.LEVEL)
         self.use_workers = int(options.get('use_workers', self.USE_WORKERS))
+        self.metric_percentile = int(options.get('percentile', self.PERCENTILE))
 
 
 class ClusterSettings(object):

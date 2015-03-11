@@ -62,7 +62,8 @@ class PersistLatencyTest(KVTest):
 
         if self.test_config.stats_settings.enabled:
             latency = self.reporter.post_to_sf(
-                *self.metric_helper.calc_observe_latency(percentile=95)
+                *self.metric_helper.calc_observe_latency(
+                    percentile=self.test_config.test_case.metric_percentile)
             )
             if hasattr(self, 'experiment'):
                 self.experiment.post_results(latency)
@@ -91,7 +92,7 @@ class MixedLatencyTest(KVTest):
             for operation in ('get', 'set'):
                 self.reporter.post_to_sf(
                     *self.metric_helper.calc_kv_latency(operation=operation,
-                                                        percentile=95)
+                                                        percentile=self.test_config.test_case.metric_percentile)
                 )
 
 
@@ -107,8 +108,9 @@ class ReadLatencyTest(MixedLatencyTest):
         super(MixedLatencyTest, self).run()
         if self.test_config.stats_settings.enabled:
             latency_get = self.reporter.post_to_sf(
-                *self.metric_helper.calc_kv_latency(operation='get',
-                                                    percentile=95)
+                *self.metric_helper.calc_kv_latency
+                 (operation='get',
+                  percentile=self.test_config.test_case.metric_percentile)
             )
             if hasattr(self, 'experiment'):
                 self.experiment.post_results(latency_get)

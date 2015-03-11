@@ -88,7 +88,8 @@ class IndexLatencyTest(QueryTest):
 
         if self.test_config.stats_settings.enabled:
             self.reporter.post_to_sf(
-                *self.metric_helper.calc_observe_latency(percentile=95)
+                *self.metric_helper.calc_observe_latency(
+                    percentile=self.test.test_config.test_case.metric_percentile)
             )
 
 
