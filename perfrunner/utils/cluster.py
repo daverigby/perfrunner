@@ -123,7 +123,11 @@ class ClusterManager(object):
     def restart_with_alternative_num_vbuckets(self):
         num_vbuckets = self.test_config.cluster.num_vbuckets
         if num_vbuckets is not None:
-            self.remote.restart_with_alternative_num_vbuckets(num_vbuckets)
+            erl_cmd = 'ns_config:set(couchbase_num_vbuckets_default, {}).'.format(
+                num_vbuckets)
+            logger.info('Changing couchbase_num_vbuckets_default to {}'.format(num_vbuckets))
+            for master in self.masters():
+                self.rest.run_diag_eval(master, erl_cmd)
 
     def restart_with_alternative_bucket_options(self):
         cmd = 'ns_bucket:update_bucket_props("{}", ' \

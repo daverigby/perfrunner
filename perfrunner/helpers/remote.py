@@ -194,11 +194,6 @@ class RemoteLinuxHelper(object):
         environ = ' '.join('{}={}'.format(k, v) for (k,v) in self.env.items())
         run(environ + ' numactl --interleave=all /etc/init.d/couchbase-server restart')
 
-    def restart_with_alternative_num_vbuckets(self, num_vbuckets):
-        logger.info('Changing number of vbuckets to {}'.format(num_vbuckets))
-        self.env['COUCHBASE_NUM_VBUCKETS'] = num_vbuckets
-        self.restart()
-
     def restart_with_alternative_num_cpus(self, num_cpus):
         logger.info('Changing number of front-end memcached threads to {}'
                     .format(num_cpus))
@@ -630,9 +625,6 @@ class RemoteWindowsHelper(RemoteLinuxHelper):
         time.sleep(self.SLEEP_TIME)
 
     def restart(self):
-        pass
-
-    def restart_with_alternative_num_vbuckets(self, num_vbuckets):
         pass
 
     def disable_wan(self):
