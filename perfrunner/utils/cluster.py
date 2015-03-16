@@ -132,6 +132,7 @@ class ClusterManager(object):
               '[{{extra_config_string, "{}={}"}}]).'
 
         for option in ('exp_pager_stime',
+                       'ht_locks',
                        'max_num_shards',
                        'max_threads',
                        'warmup_min_memory_threshold'):

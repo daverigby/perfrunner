@@ -307,6 +307,7 @@ class BucketSettings(object):
     REPLICA_INDEX = 0
     EVICTION_POLICY = 'valueOnly'  # alt: fullEviction
     EXPIRY_PAGER_SLEEP_TIME = -1
+    HT_LOCKS = -1
 
     def __init__(self, options):
         self.password = options.get('password', self.PASSWORD)
@@ -333,6 +334,7 @@ class BucketSettings(object):
 
         self.exp_pager_stime = int(options.get('exp_pager_stime',
                                                self.EXPIRY_PAGER_SLEEP_TIME))
+        self.ht_locks = int(options.get('ht_locks', self.HT_LOCKS))
 
 
 class CompactionSettings(object):
