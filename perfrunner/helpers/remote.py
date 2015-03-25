@@ -3,6 +3,7 @@ import time
 from decorator import decorator
 from fabric import state
 from fabric.api import execute, get, put, run, parallel, settings
+from fabric.context_managers import quiet
 from fabric.exceptions import CommandTimeout
 from logger import logger
 
@@ -39,6 +40,20 @@ def all_gateways(task, *args, **kargs):
 def all_gateloads(task, *args, **kargs):
     self = args[0]
     return execute(parallel(task), *args, hosts=self.gateloads, **kargs)
+
+
+def run_with_retry(command, attempts):
+    """Runs the specified command, trying up to 'attempts' times if it fails.
+
+    Returns the final result from fabric.abi.run()."""
+    with quiet():
+        for retries in range(attempts):
+            result = run(command)
+            if result.succeeded:
+                break
+            else:
+                time.sleep(1)
+    return result
 
 
 class RemoteHelper(object):
@@ -205,10 +220,23 @@ class RemoteLinuxHelper(object):
         self.env['COUCHBASE_NS_SERVER_VM_EXTRA_ARGS'] = '["+sfwi", "100", "+sbwt", "long"]'
         self.restart()
 
-    def restart_with_tcmalloc_aggressive_decommit(self):
-        logger.info('Enabling TCMalloc aggressive decommit')
-        self.env['TCMALLOC_AGGRESSIVE_DECOMMIT'] = 't'
-        self.restart()
+    @all_hosts
+    def configure_tcmalloc_aggressive_decommit(self, value):
+        logger.info('Setting TCMalloc aggressive_decommit to {}'.format(bool(value)))
+        mcctl = '/opt/couchbase/bin/mcctl -h localhost:11210 '
+        result = run_with_retry(mcctl + 'set tcmalloc.aggressive_memory_decommit {}'.format(value),
+                                attempts=10)
+        if result.failed:
+            logger.interrupt('Failed to set TCMalloc aggressive_decommit ' +
+                             '(after 10 attempts):\n{}'.format(result))
+
+
+        # Check it took effect.
+        new_value = run_with_retry(mcctl + 'get tcmalloc.aggressive_memory_decommit',
+                                   attempts=10)
+        if value != int(new_value):
+            logger.interrupt('Failed to set TCMalloc aggressive_decommit - requested:{}, got:{} -\n{}'.format(
+                    bool(value), bool(int(new_value)), new_value))
 
     @all_hosts
     def disable_moxi(self):
