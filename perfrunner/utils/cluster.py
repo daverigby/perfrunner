@@ -155,9 +155,10 @@ class ClusterManager(object):
         if num_cpus:
             self.remote.restart_with_alternative_num_cpus(num_cpus)
 
-    def restart_with_tcmalloc_aggressive_decommit(self):
-        if self.test_config.cluster.tcmalloc_aggressive_decommit:
-            self.remote.restart_with_tcmalloc_aggressive_decommit()
+    def configure_tcmalloc_aggressive_decommit(self):
+        value = self.test_config.cluster.tcmalloc_aggressive_decommit
+        if value != -1:
+            self.remote.configure_tcmalloc_aggressive_decommit(value)
 
     def restart_with_sfwi(self):
         if self.test_config.cluster.sfwi:
@@ -231,7 +232,10 @@ def main():
     cm.restart_with_sfwi()
     cm.restart_with_alternative_num_vbuckets()
     cm.restart_with_alternative_num_cpus()
-    cm.restart_with_tcmalloc_aggressive_decommit()
+
+    # NOTE: configure_tcmalloc_aggressive_decommit() should be after
+    # any restarts, as it doesn't survive a restart.
+    cm.configure_tcmalloc_aggressive_decommit()
     cm.configure_internal_settings()
     cm.set_data_path()
     cm.set_auth()
