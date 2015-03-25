@@ -1,3 +1,5 @@
+import csv
+import itertools
 import time
 from optparse import OptionParser
 
@@ -212,7 +214,7 @@ def get_options():
 
 def main():
     options, args = get_options()
-    override = args and (arg.split('.') for arg in ' '.join(args).split(','))
+    override = args and (arg.split('.') for arg in itertools.chain(*csv.reader(args)))
 
     cluster_spec = ClusterSpec()
     cluster_spec.parse(options.cluster_spec_fname)

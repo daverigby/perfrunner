@@ -79,6 +79,13 @@ Overriding test config options (comma-separated section.option.value trios):
     ./env/bin/python -m perfrunner -c clusters/vesta.spec -t tests/comp_bucket_20M.test \
         load.size.512,cluster.initial_nodes.3 4
 
+Note that if any part of the trio inclues commas, then the whole trio
+needs to be quoted with doublequotes - for example to set the `cluster.jemalloc` option to
+the value `foo:1,bar:2`:
+
+    ./env/bin/python -m perfrunner -c clusters/foo.spec -t tests/bar.test \
+        load.size.512,"cluster.jemalloc.foo:1,bar:2"
+
 `--verbose` flag enables Fabric logging.
 
 `--nodebug` flag disables debug phase (e.g., execution of cbcollect_info).
