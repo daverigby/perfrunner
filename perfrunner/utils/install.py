@@ -25,7 +25,7 @@ class CouchbaseInstaller(object):
         arch = self.remote.detect_arch()
         pkg = self.remote.detect_pkg()
         release, build = options.version.split('-')
-        self.SHERLOCK_BUILDS = 'http://latestbuilds.hq.couchbase.com/couchbase-server/sherlock/{}/'.format(build)
+        self.SHERLOCK_BUILDS = 'http://newestbuilds.lambda.nu/builds/latestbuilds/couchbase-server/sherlock/{}/'.format(build)
 
         self.build = Build(arch, pkg, options.version, release, build,
                            options.toy)
