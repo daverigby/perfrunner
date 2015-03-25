@@ -243,6 +243,7 @@ class ClusterSettings(object):
     RUN_CBQ = 0
     SFWI = 0
     TCMALLOC_AGGRESSIVE_DECOMMIT = -1
+    JEMALLOC_CONF = False
 
     def __init__(self, options):
         self.mem_quota = int(options.get('mem_quota'))
@@ -264,6 +265,7 @@ class ClusterSettings(object):
         self.sfwi = options.get('sfwi', self.SFWI)
         self.tcmalloc_aggressive_decommit = int(options.get('tcmalloc_aggressive_decommit',
                                                             self.TCMALLOC_AGGRESSIVE_DECOMMIT))
+        self.jemalloc_conf = options.get('jemalloc_conf', self.JEMALLOC_CONF)
 
 
 class StatsSettings(object):

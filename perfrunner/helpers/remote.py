@@ -240,6 +240,17 @@ class RemoteLinuxHelper(object):
                     bool(value), bool(int(new_value)), new_value))
 
     @all_hosts
+    def restart_with_jemalloc_conf(self):
+        config = self.test_config.cluster.jemalloc_conf
+        if config:
+            logger.info('Restarting with jemalloc config \'{}\''.format(config))
+            run('ln -sf {} /etc/je_malloc.conf'.format(config))
+        else:
+            # Clear any previous config by removing the symlink.
+            run('rm -f /etc/je_malloc.conf')
+        self.restart()
+
+    @all_hosts
     def disable_moxi(self):
         logger.info('Disabling moxi')
         run('rm /opt/couchbase/bin/moxi')

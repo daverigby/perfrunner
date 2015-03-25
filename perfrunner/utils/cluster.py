@@ -155,6 +155,9 @@ class ClusterManager(object):
         if num_cpus:
             self.remote.restart_with_alternative_num_cpus(num_cpus)
 
+    def restart_with_alternative_jemalloc_conf(self):
+        self.remote.restart_with_jemalloc_conf()
+
     def configure_tcmalloc_aggressive_decommit(self):
         value = self.test_config.cluster.tcmalloc_aggressive_decommit
         if value != -1:
@@ -232,6 +235,7 @@ def main():
     cm.restart_with_sfwi()
     cm.restart_with_alternative_num_vbuckets()
     cm.restart_with_alternative_num_cpus()
+    cm.restart_with_alternative_jemalloc_conf()
 
     # NOTE: configure_tcmalloc_aggressive_decommit() should be after
     # any restarts, as it doesn't survive a restart.
