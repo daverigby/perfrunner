@@ -509,10 +509,13 @@ class PathoGenTest(FragmentationTest):
     def access(self):
         for target in self.target_iterator:
             host, port = target.node.split(':')
+            # Scale queisce time with #items - 1 second per 1000 items.
+            quiesce_time = self.test_config.load_settings.items / 1000
             PathoGen(num_items=self.test_config.load_settings.items,
                      num_workers=self.test_config.load_settings.workers,
                      num_iterations=self.test_config.load_settings.iterations,
-                     host=host, port=port, bucket=target.bucket).run()
+                     host=host, port=port, bucket=target.bucket,
+                     quiesce_time=quiesce_time).run()
 
     def run(self):
         self.access()
@@ -531,8 +534,11 @@ class PathoGenFrozenTest(PathoGenTest):
     def access(self):
         for target in self.target_iterator:
             host, port = target.node.split(':')
+            # Scale queisce time with #items - 1 second per 1000 items.
+            quiesce_time = self.test_config.load_settings.items / 1000
             PathoGen(num_items=self.test_config.load_settings.items,
                      num_workers=self.test_config.load_settings.workers,
                      num_iterations=self.test_config.load_settings.iterations,
                      frozen_mode=True,
-                     host=host, port=port, bucket=target.bucket).run()
+                     host=host, port=port, bucket=target.bucket,
+                     quiesce_time=quiesce_time).run()

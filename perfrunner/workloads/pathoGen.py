@@ -158,7 +158,7 @@ class PathoGen(object):
     """Main generator class, responsible for orchestrating the process."""
 
     def __init__(self, num_items, num_workers, num_iterations, frozen_mode, host,
-                 port, bucket):
+                 port, bucket, quiesce_time):
         self.num_items = num_items
         self.num_workers = num_workers
 
@@ -186,7 +186,8 @@ class PathoGen(object):
                                promotion_policy=promotion_policy,
                                num_items=self.num_items,
                                num_iterations=num_iterations,
-                               max_size=max_size)
+                               max_size=max_size,
+                               quiesce_time=quiesce_time)
             else:
                 t = Worker(number=i, host=host, port=port, bucket=bucket,
                            in_queue=self.queues[i],
@@ -280,11 +281,9 @@ class SequenceIterator(object):
 
 
 class Supervisor(Worker):
-
-    SLEEP_TIME = 0
-
     def __init__(self, number, host, port, bucket, queues, in_queue,
-                 out_queue, promotion_policy, num_items, num_iterations, max_size):
+                 out_queue, promotion_policy, num_items, num_iterations, max_size,
+                 quiesce_time):
         super(Supervisor, self).__init__(number, host, port, bucket,
                                          in_queue, out_queue,
                                          promotion_policy)
@@ -292,6 +291,7 @@ class Supervisor(Worker):
         self.num_items = num_items
         self.num_iterations = num_iterations
         self.max_size = max_size
+        self.quiesce_time = quiesce_time
 
     def run(self):
         """Run the Supervisor. This is similar to Worker, except that
@@ -353,24 +353,28 @@ class Supervisor(Worker):
             # frozen at their last size.
             finished_items = [(ii, sz) for (ii, sz) in finished_items if sz == self.max_size]
 
-            logger.info('Completed iteration {}/{}, frozen {}/{} documents (aggregate). sleeping for {}s'.format(
+            logger.info('Completed iteration {}/{}, frozen {}/{} documents (aggregate).'.format(
                 iteration + 1, self.num_iterations,
-                self.num_items - len(finished_items), self.num_items,
-                self.SLEEP_TIME))
-            # Sleep at end of iteration to give disk write queue chance to drain.
-            time.sleep(self.SLEEP_TIME)
+                self.num_items - len(finished_items), self.num_items))
 
         # All iterations complete. Send a special null generator
         # document around the ring - this tells the workers to shutdown.
         self.out_queue.put((-1, None, 0))
 
-        # Finally, set all remaining documents back to size zero.
+        # Set all remaining documents back to size zero, to leave 'holes'
+        # of their previous size in memory.
         for (i, size) in list(finished_items):
             self._set_with_retry('doc_' + str(i), self.buffer[:0])
+
+        # Finally, sleep for the quiesce time to give the memory allocator / defragmenter
+        # an opportunity to improve the RSS.
+        logger.info(('All iterations complete. Sleeping for {} seconds to allow ' +
+                     'system to quiesce.').format(self.quiesce_time))
+        time.sleep(self.quiesce_time)
 
 
 if __name__ == '__main__':
     # Small smoketest
     PathoGen(num_items=1000, num_workers=17, num_iterations=10,
              frozen_mode=True, host='localhost', port=9000,
-             bucket='bucket-1').run()
+             bucket='bucket-1', quiesce_time=0).run()
