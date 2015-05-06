@@ -16,6 +16,7 @@ from perfrunner.workloads.revAB.__main__ import produce_AB
 from perfrunner.workloads.revAB.graph import generate_graph, PersonIterator
 from perfrunner.workloads.tcmalloc import WorkloadGen
 from perfrunner.workloads.pathoGen import PathoGen
+from perfrunner.workloads.pillowfight import Pillowfight
 
 
 class KVTest(PerfTest):
@@ -493,3 +494,29 @@ class PathoGenFrozenTest(PathoGenTest):
                      num_iterations=self.test_config.load_settings.iterations,
                      frozen_mode=True,
                      host=host, port=port, bucket=target.bucket).run()
+
+
+class PillowfightTest(PerfTest):
+    """Uses pillowfight from libcouchbase to drive cluster."""
+
+    @with_stats
+    def access(self):
+        workload = self.test_config.access_settings
+        for target in self.target_iterator:
+            host, port = target.node.split(':')
+            Pillowfight(host=host, port=port, bucket=target.bucket,
+                        password=self.test_config.bucket.password,
+                        num_items=workload.items,
+                        num_threads=workload.workers,
+                        writes=workload.updates,
+                        size=workload.size).run()
+
+    def run(self):
+        from_ts, to_ts = self.access()
+        time_elapsed = (to_ts - from_ts) / 1000.0
+
+        self.reporter.finish('Pillowfight', time_elapsed)
+        if self.test_config.stats_settings.enabled:
+            self.reporter.post_to_sf(
+                self.metric_helper.calc_avg_ops()
+            )

@@ -1,0 +1,22 @@
+[test_case]
+test = perfrunner.tests.kv.PillowfightTest
+title = Pillowfight, 50/50 R/W x 10M 1K items
+summary = Pillowfight op/sec, 10M items
+use_workers = 0
+
+[cluster]
+mem_quota = 10240
+initial_nodes = 2
+num_buckets = 1
+
+[bucket]
+replica_number = 1
+
+[access]
+items = 10000000
+iterations = 3
+workers = 16
+# 50/50 read/write
+reads = 50
+updates = 50
+size = 1024
